@@ -3,7 +3,8 @@ public class EmployeeSkillTriggerHelper {
         Id[] employeeIdList = new Id[]{};
         Employee__c[] employeeList = new Employee__c[]{};
         AggregateResult[] employeeSummAssignedTimeList = new AggregateResult[]{};
-        EmployeeWrapper[] employeeWrapperList = new EmployeeWrapper[]{};
+        Map<Id,EmployeeWrapper> employeeWrapperList = new Map<Id,EmployeeWrapper>();
+        // EmployeeWrapper[] employeeWrapperList = new EmployeeWrapper[]{};
         Map<Id, Integer> employeeSkillMap = new Map<Id, Integer>();
 
         for (EmployeeSkill__c employeeSkill : triggerNew) {
@@ -42,30 +43,29 @@ public class EmployeeSkillTriggerHelper {
             newEmployeeWrapper.availability = Math.round((Decimal)employee.Availability__c);
             newEmployeeWrapper.summAssignedTime = employeeSkillMap.get(employee.Id);
 
+            employeeWrapperList.put(employee.Id, newEmployeeWrapper);
+        }
 
-            // for (AggregateResult summAssignedTime : employeeSummAssignedTimeList) {
-            //     if (summAssignedTime.get('Employee__c') == employee.Id) {
-            //         newEmployeeWrapper.summAssignedTime = Math.round((Decimal)summAssignedTime.get('summ'));
-            //     }
-            // }
-
-            employeeWrapperList.add(newEmployeeWrapper);
+        for (SObject employeeSkill : triggerNewMap.values())  {
+            if (employeeWrapperList.containsKey((Id)employeeSkill.get('Employee__c'))) {
+                EmployeeWrapper employeeWrapper = employeeWrapperList.get((Id)employeeSkill.get('Employee__c'));
+                employeeWrapper.employeeSkillIdList.add(employeeSkill.Id);
+            }
         }
         
-        for (EmployeeWrapper employeeWrapper : employeeWrapperList) {
+        for (EmployeeWrapper employeeWrapper : employeeWrapperList.values()) {
             if (employeeWrapper.availability < employeeWrapper.summAssignedTime) {
-                for (SObject employeeSkill : triggerNewMap.values())  {
-                    if (employeeSkill.get('Employee__c') == employeeWrapper.id) {
-                        employeeSkill.addError('Availability is less than overall Assigned Time!');
-                    }
+                for (Id employeeSkillId : employeeWrapper.employeeSkillIdList) {
+                    triggerNewMap.get(employeeSkillId).addError('Availability is less than overall Assigned Time!');
                 }
             }
         }
     }
 
     public class EmployeeWrapper {
-        Id id {get; set;}
+        public Id id {get; set;}
         public Integer availability {get; set;}
         public Integer summAssignedTime {get; set;}
+        public Id[] employeeSkillIdList {get; set;} { employeeSkillIdList = new Id[]{}; }
     }
 }
