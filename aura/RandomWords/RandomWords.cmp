@@ -1,0 +1,97 @@
+<!-- c:RandomWords.cmp -->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" controller="WordsController">
+
+    <!-- Unique labels for buttons -->
+    <aura:attribute name="uniqueSubjects" type="String[]" />
+    <!-- Store of all selected words by lessons -->
+    <aura:attribute name="storeSelectedWords" type="Map" default="{}" />
+    <!-- All words(objs) selected by 'Subject__c' name -->
+    <aura:attribute name="selectedWords" type="Words__c[]" />
+    <!-- Status of all buttons(Subject__c) selected or unselected -->
+    <aura:attribute name="buttonStatus" type="Map" default='{}' />
+    <!-- Word(obj) to display in WordsBoard.cmp -->
+    <aura:attribute name="randomWord" type="Words__c" default='{}'/>
+    <!-- Button that should change in the 'SubjectButtons.cmp' with Subject__c name(label) -->
+    <aura:attribute name="buttonNameForChange" type="String" />
+    <!-- A word for history in the component. -->
+    <aura:attribute name="oldRandomWord" type="Words__c" />
+
+    <!-- EVENTS ******************************************************************************************* -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <!-- Hendle event onclick from SubjectButtons.cmp -->
+    <aura:handler name="eventClickedSubject" event="c:EventSelectedSubject" action="{!c.handleClickedSubject}" />
+    <!-- Hendle event onclick from WordsBoard.cmp -->
+    <aura:handler name="eventGetNextRandomWord" event="c:EventGetRandomWord" action="{!c.getRandomWord}" />
+    <!-- Handle event to resume selected words by lesson(s) -->
+    <aura:handler name="eventClickedRefresh" event="c:EventRefreshWords" action="{!c.handleClickedRefresh}" />
+    <!--  -->
+    <aura:handler name="eventClickShowOrHideLesson" event="c:EventShowOrHideLesson" action="{!c.handleClickShowOrHideLesson}" />
+
+    <!-- MARKUP ******************************************************************************************* -->
+    <div class="slds-grid slds-size_1-of-1 slds-wrap">
+        <!-- Button to the top of page -->
+        <div class="slds-is-fixed custom-button-top">
+            <lightning:buttonIcon aura:id="btnToTheTop"
+                                  class="slds-hide"
+                                  iconName="utility:level_up"
+                                  variant="bare"
+                                  size="large"
+                                  onclick="{!c.handleClickToTheTop}"
+                                  alternativeText="To the top" />
+        </div>
+        <!-- PAGE HEADER -->
+        <div class="slds-col slds-size_1-of-1">
+            <lightning:layout class="slds-page-header slds-page-header--object-home">
+                <lightning:layoutItem >
+                    <lightning:icon iconName="custom:custom109" alternativeText="Random words" />
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="horizontal-small">
+                    <div class="page-section page-header">
+                        <h1 class="slds-text-heading--label">Random words</h1>
+                        <h2 class="slds-text-heading--medium">Fill the power of the language!</h2>
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+        <!-- / PAGE HEADER -->
+
+        <div class="slds-col slds-size_1-of-1">
+            <c:WordsProgress storeSelectedWords="{!v.storeSelectedWords}"
+                             selectedWords="{!v.selectedWords}"
+                             buttonStatus="{!v.buttonStatus}"
+                             paddingClass="slds-p-around_large"
+            />
+        </div>
+
+        <!-- Sticky progressbar on scrolling -->
+        <lightning:layoutItem class="slds-col slds-size_1-of-1 slds-hide slds-is-fixed custom-progress-sticky"
+                              aura:id="progress">
+            <c:WordsProgress storeSelectedWords="{!v.storeSelectedWords}"
+                            selectedWords="{!v.selectedWords}"
+                            buttonStatus="{!v.buttonStatus}"
+                            paddingClass="slds-p-right_large"
+            />
+        </lightning:layoutItem>
+
+        <lightning:layoutItem class="slds-col slds-size_1-of-1" 
+                              aura:id='wordsBoard'>
+            <c:WordsBoard word="{!v.randomWord}" />
+        </lightning:layoutItem>
+
+        <div class="slds-col slds-size_1-of-1">
+            <c:WordsControllPanel />
+        </div>
+
+        <lightning:layoutItem class="slds-col slds-size_1-of-1 slds-hide" 
+                              aura:id='subjectButtons'>
+            <c:SubjectButtons subjects="{!v.uniqueSubjects}"
+                              buttonStatus="{!v.buttonStatus}"
+                              changedButtonName="{!v.buttonNameForChange}"
+            />
+        </lightning:layoutItem>
+
+        <div class="slds-col slds-size_1-of-1">
+            <c:WordsHistory wordForHistory="{!v.oldRandomWord}" />
+        </div>
+    </div>
+</aura:component>

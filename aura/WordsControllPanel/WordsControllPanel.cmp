@@ -1,0 +1,39 @@
+<!-- c:WordsControllPanel -->
+<aura:component >
+    <!-- Status of all buttons(Subject__c) selected or unselected -->
+    <!-- <aura:attribute name="buttonStaus" type="Map" default="{}" /> -->
+
+    <!-- EVENTS ******************************************************************************************* -->
+    <!-- Event onclick fire to resume selected words -->
+    <aura:registerEvent name="eventClickedRefresh" type="c:EventRefreshWords" />
+    <!-- Event onclick fire to show component with lessons (Subject__c) -->
+    <aura:registerEvent name="eventClickShowOrHideLesson" type="c:EventShowOrHideLesson" />
+                        
+    <!-- MARKUP ******************************************************************************************* -->
+    <div class="slds-align_absolute-center slds-p-vertical_small">
+        <lightning:buttonGroup >
+            <lightning:button label="Refresh Words"
+                              name='refresh'
+                              aura:id='refresh'
+                              iconName='utility:refresh'
+                              iconPosition="left"
+                              onclick="{!c.clickOnRefreshBtn}"
+            />
+            <lightning:button label="Select Lesson"
+                              name='select'
+                              aura:id='select'
+                              iconName='utility:add'
+                              iconPosition='right'
+                              onclick='{!c.clickSelectLesson}'
+            />
+            <lightning:button label="Finish Selection"
+                              name='finish'
+                              aura:id='finish'
+                              class='slds-hide'
+                              iconName='utility:priority'
+                              iconPosition='left'
+                              onclick='{!c.clickSelectLesson}'
+            />
+        </lightning:buttonGroup>
+    </div>
+</aura:component>

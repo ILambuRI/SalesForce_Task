@@ -1,0 +1,35 @@
+<!-- c:SubjectButtons -->
+<aura:component >
+    
+    <!-- Unique 'Subject__c' for buttons label -->
+    <aura:attribute name="subjects" type="String[]" />
+    <!-- Status of all buttons selected/unselected -->
+    <aura:attribute name="buttonStatus" type="Map" default='{}'/>
+    <!-- Name of the changed button -->
+    <aura:attribute name="changedButtonName" type="String" default="" />
+    
+    <!-- ************************************************************************************************* -->
+    <!-- Handle when the value changes -->
+    <aura:handler name="change" value="{!v.changedButtonName}" action="{!c.handleButtonNameChange}" />
+    
+    <!-- Event onclick fire Subject__c name (button label) -->
+    <aura:registerEvent name="eventClickedSubject" type="c:EventSelectedSubject" />
+    
+    <!-- MARKUP ******************************************************************************************* -->
+    <lightning:layoutItem class="slds-grid slds-grid_align-center" size="12">
+        <lightning:layoutItem class="slds-text-align_center"
+                              padding="around-small"
+                              size="12" smallDeviceSize="12" mediumDeviceSize="10" largeDeviceSize="6">
+                              
+            <aura:iteration var="subject" items="{!v.subjects}">
+                <lightning:button label="{!subject}"
+                                aura:id="allButtons"
+                                class="slds-m-top--medium"
+                                variant="neutral"
+                                disabled="false"
+                                onclick="{!c.clickOnSubjectBtn}" />
+            </aura:iteration>
+        </lightning:layoutItem>
+    </lightning:layoutItem>
+
+</aura:component>

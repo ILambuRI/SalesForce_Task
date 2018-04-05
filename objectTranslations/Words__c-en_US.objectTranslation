@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Words</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Words</value>
+    </caseValues>
+    <fields>
+        <help><!-- Enter English word(expression) here plz. --></help>
+        <label><!-- English --></label>
+        <name>English__c</name>
+    </fields>
+    <fields>
+        <help><!-- Enter all words on Russian here. --></help>
+        <label><!-- Russian --></label>
+        <name>Russian__c</name>
+    </fields>
+    <fields>
+        <help><!-- Enter short subject. --></help>
+        <label><!-- Subject --></label>
+        <name>Subject__c</name>
+    </fields>
+    <fields>
+        <label><!-- Transcription --></label>
+        <name>Transcription__c</name>
+    </fields>
+    <startsWith>Vowel</startsWith>
+</CustomObjectTranslation>

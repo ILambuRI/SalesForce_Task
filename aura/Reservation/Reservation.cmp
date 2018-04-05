@@ -1,0 +1,91 @@
+<!-- c:Reservation -->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" controller='ReservationController'>
+	<aura:attribute name='partsOfTheDay' type='Map' default='{}' />
+    <aura:attribute name='partsNames' type='Map[]' default='[]' />
+    <aura:attribute name='currentPart' type='Map[]' default='[]' />
+
+	<!-- EVENTS ******************************************************************************************* -->
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<!-- aura:handler name="change" value="{!v.partsOfTheDay}" action="{!c.handleClickOnPartBtn}" / -->
+    
+	<!-- MARKUP ******************************************************************************************* -->
+
+	<lightning:card >
+		<!-- Set title to main card -->
+        <aura:set attribute="title">
+			<lightning:buttonGroup >
+				<aura:iteration var='name' items='{!v.partsNames}'>
+					<lightning:button label="{!name}" value='{!name}' onclick="{!c.handleClickOnPartBtn}"/>
+				</aura:iteration>
+			</lightning:buttonGroup>
+        </aura:set>
+
+		<!-- Set body to main card -->
+		<aura:set attribute="body">
+			<lightning:accordion >
+				<!-- Iteration by hours -->
+				<aura:iteration var='hour' items='{!v.currentPart}'>
+					<lightning:accordionSection name="{!hour.hour}" label="{!'Hour ' + hour.hour}">
+						<!-- Card with table formation -->
+						<lightning:card >
+							<!-- Set body for inside card -->
+							<aura:set attribute="body">
+								<div class="slds-card__body">
+									<table class="slds-table slds-table_fixed-layout slds-table_bordered slds-no-row-hover slds-table_cell-buffer">
+										<thead>
+											<tr class="slds-text-title_caps">
+												<th scope="col">
+													<div class="slds-truncate" title="Time">Time</div>
+												</th>
+												<th scope="col">
+													<div class="slds-truncate" title="Event description">Event</div>
+												</th>
+												<th scope="col">
+													<div class="slds-truncate" title="Set event on current time">Action</div>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<!-- Iteration by minutes -->
+											<aura:iteration var='minute' items='{!hour.minutes}'>
+												<tr class="slds-hint-parent">
+													<th scope="row">
+														<div class="slds-truncate" title="Time">
+															{!hour.hour + ' : ' + minute.minute}
+														</div>
+													</th>
+													<td>
+														<div class="slds-truncate" title="Description of that event">
+															{!minute.description}
+														</div>
+													</td>
+													<td>
+														<div class="slds-truncate" title="Set event on this time">
+															<lightning:button label="Add"/>
+														</div>
+													</td>
+													
+												</tr>
+											</aura:iteration>
+										</tbody>
+									</table>
+								</div>
+							</aura:set>
+							<!-- Set footer for inside card -->
+							<aura:set attribute="footer">
+									Inside Card Footer
+							</aura:set>
+						</lightning:card>
+					</lightning:accordionSection>
+				</aura:iteration>
+				<!--lightning:accordionSection name="A" label="Accordion Title A">This is the content area for section A</lightning:accordionSection -->
+			</lightning:accordion>
+		</aura:set>
+
+		<!-- Set title to main card -->
+		<aura:set attribute="footer">
+			Main Card Footer
+		</aura:set>
+	</lightning:card>
+
+</aura:component>

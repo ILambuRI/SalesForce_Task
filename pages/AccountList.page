@@ -1,0 +1,202 @@
+<apex:page lightningStylesheets="true" docType="html-5.0" controller="AccountListController" showHeader="true" sideBar="false" standardStylesheets="true">
+    <head>
+        <apex:slds />
+    </head>
+    
+    <body class="slds-scope">
+        <apex:form >
+            <!-- DON'T WORK - I DON'T WHY -->
+            <!-- <apex:actionFunction name="setSelectedAccountById" action="{!setSelectedAccountById}" reRender="contacts_detail">
+                <apex:param name="id" assignTo="{!selectedId}" value="" />
+            </apex:actionFunction> -->
+
+    
+            <div class="slds-grid slds-grid_align-center" id="alert_message">
+                <div class="slds-col slds-size_3-of-12">
+                    <!-- Alert message -->
+                    <!-- <apex:messages /> -->
+                    <apex:pageMessages ></apex:pageMessages>
+                </div>
+            </div>
+
+            <div class="slds-grid slds-gutters">
+                <!-- Left column Accounts List -->
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-card-wrapper">
+                        <header>
+                            <h2 class="slds-text-heading_medium">Accounts List</h2>
+                        </header>
+                        <apex:repeat value="{!accountsList}" var="account">
+                            <article class="slds-card slds-card_boundary">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <span class="slds-icon_container slds-icon-standard-contact" title="description of icon when needed">
+                                                <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <span class="slds-text-heading_small">{!account.name}</span>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <!-- DON'T WORK - I DON'T WHY -->
+                                        <!-- <apex:commandbutton value="View Contacts" onclick="setSelectedAccountById('{!account.id}')" reRender="false"/> -->
+                                        <!-- DON'T WORK - I DON'T WHY -->
+                                        <!-- <apex:outputPanel onclick="setSelectedAccountById('{!account.id}')" styleClass="slds-button slds-button_neutral">View Contacts</apex:outputPanel> -->
+
+                                        <apex:commandlink action="{!setSelectedAccountById}">
+                                            <apex:param name="id" value="{!account.id}" assignTo="{!selectedId}" />
+                                            <apex:commandbutton value="View Contacts" />
+                                        </apex:commandlink>
+                                    </div>
+                                </div>
+                            </article>
+                        </apex:repeat>
+                    </div>
+                </div>
+
+                <!-- Right column Account's Contacts -->
+                <div class="slds-col slds-size_1-of-2">
+                    <apex:outputPanel id="contacts_detail">
+                        <apex:outputPanel layout="block" rendered="{!isSelectedAccount}">
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <span class="slds-icon_container slds-icon-standard-contact" title="description of icon when needed">
+                                                <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="[object Object]">
+                                                    <span class="slds-text-heading_small">Contacts from "{!selectedAccount.name}"</span>
+                                                    <!-- <span class="slds-text-heading_small">Contacts {!IF({!isSelectedAccount}, "2", "1")}</span> -->
+                                                </a>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <!-- <button class="slds-button slds-button_neutral">New</button> -->
+                                        <apex:commandButton action="{!newModal}" value="New" />
+                                        <apex:commandButton action="{!deleteContactsFromSelectedAccount}" value="Delete" />
+
+                                        <!-- <apex:commandlink action="{!deleteContactsFromSelectedAccount}">
+                                                                        <apex:commandbutton value="Delete" />
+                                                                    </apex:commandlink> -->
+                                    </div>
+                                </div>
+                                <div class="slds-card__body">
+                                    <table class="slds-table slds-table_fixed-layout slds-table_bordered slds-no-row-hover slds-table_cell-buffer">
+                                        <thead>
+                                            <tr class="slds-text-title_caps">
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Delete">Delete</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="First Name">First Name</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Last Name">Last Name</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Email">Email</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Edit">Edit</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:repeat value="{!selectedAccount.contactsList}" var="contact">
+                                                <tr class="slds-hint-parent">
+                                                    <td>
+                                                        <div class="slds-truncate" title="Delete">
+                                                            <apex:inputCheckbox value="{!contact.forDelete}">
+                                                                <!-- <apex:actionSupport event="onclick" reRender="contacts_detail" /> -->
+                                                            </apex:inputCheckbox>
+                                                        </div>
+                                                    </td>
+                                                    <th scope="row">
+                                                        <div class="slds-truncate" title="Adam Choi">
+                                                            <strong>{!contact.firstName}</strong>
+                                                        </div>
+                                                    </th>
+                                                    <td>
+                                                        <div class="slds-truncate" title="Company One">
+                                                            <strong>{!contact.lastName}</strong>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title="Director of Operations">
+                                                            <strong>{!contact.Email}</strong>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title="Director of Operations">
+                                                            <!-- <apex:commandButton action="{!editModal}" value="Edit" /> -->
+
+                                                            <apex:commandlink action="{!editModal}">
+                                                                <apex:param name="id" value="{!contact.id}" assignTo="{!selectedId}" />
+                                                                <apex:commandbutton value="Edit" />
+                                                            </apex:commandlink>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </article>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </apex:form>
+
+        <!-- Modal -->
+        <apex:form rendered="{!isShowModal}">
+            <apex:pageBlock >
+                <div class="demo-only">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1"
+                        class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Contact Detail:</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="text-input-id-1">First Name</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:inputText value="{!formInputs.firstName}" />
+                                    </div>
+                                    <label class="slds-form-element__label" for="text-input-id-1">Last Name</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:inputText value="{!formInputs.lastName}" />
+                                    </div>
+                                    <label class="slds-form-element__label" for="text-input-id-1">Email</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:inputText value="{!formInputs.email}" />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <apex:commandButton action="{!cancelModal}" value="Cancel" />
+                                <apex:commandButton action="{!saveModal}" value="Save" />
+                            </footer>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </apex:pageBlock>
+        </apex:form>
+    </body>
+</apex:page>

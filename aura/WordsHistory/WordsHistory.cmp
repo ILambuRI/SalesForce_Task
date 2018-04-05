@@ -1,0 +1,96 @@
+<!-- c:WordsHistory -->
+<aura:component >
+    <!-- Word for history -->
+    <aura:attribute name="wordForHistory" type="Words__c" required="true" />
+    <!-- Array with words for iteration -->
+    <aura:attribute name="listOfWords" type="List[]" default="[]" />
+    <!-- Words statistics -->
+    <aura:attribute name='wordsStat' type='Map' default='{
+        overall : 0,
+        skipped : 0,
+        success : 0,
+        error : 0,
+    }' />
+    
+    <!-- ************************************************************************************************* -->
+    <!-- Add word to array -->
+    <aura:handler name="change" value="{!v.wordForHistory}" action="{!c.addWordToList}" />
+    
+    <!-- ************************************************************************************************* -->
+    <div class="slds-grid slds-grid_align-center">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12 slds-text-align_center">
+            <div class="slds-m-bottom_medium">
+                <span class="slds-badge slds-text-heading_small">
+                    <lightning:icon iconName="utility:database" size="small" variant="error"
+                                    class="slds-p-horizontal_x-small"
+                                    alternativeText="Overall" title="Overall words in the history" />
+                    <strong>- {!v.wordsStat.overall}</strong>
+                    
+                    <lightning:icon iconName="utility:warning" size="small" variant="warning"
+                                    class="slds-p-horizontal_x-small"
+                                    alternativeText="Overall" title="Skipped words" />
+                    <strong>- {!v.wordsStat.skipped}</strong>
+
+                    <lightning:icon iconName="utility:success" size="small" variant="success" 
+                                    class="slds-p-horizontal_x-small"
+                                    alternativeText="Overall" title="Correct input" />
+                    <strong>- {!v.wordsStat.success}</strong>
+
+                    <lightning:icon iconName="utility:error" size="small" variant="error"
+                                    class="slds-p-horizontal_x-small"
+                                    alternativeText="Overall" title="Incorrect input" />
+                    <strong>- {!v.wordsStat.error}</strong>
+                </span>
+            </div>
+            <ul class="slds-has-dividers_around-space">
+                <!-- Start iteration -->
+                <aura:iteration var="word" items="{!v.listOfWords}">
+                    <li class="slds-item slds-theme_inverse">
+                        <article class="slds-tile slds-tile_board">
+                            <div class="slds-tile__detail">
+                                <p class="slds-text-heading_large custom-text-color-yellow">
+                                    {!word.English__c}
+                                </p>
+                                <p class="slds-truncate">
+                                    [{!word.Transcription__c}]
+                                </p>
+                                <p class="slds-text-heading_small custom-text-color-yellow">
+                                    {!word.Russian__c}
+                                </p>
+                                <aura:if isTrue="{!word.enteredWord}">
+                                    <p class="slds-truncate">
+                                        Entered:
+                                    </p>
+                                    <p class="slds-text-heading_medium custom-text-color-yellow">
+                                        {!word.enteredWord}
+                                    </p>
+                                </aura:if>
+                                <!-- Show the icon depending on the value -->
+                                <span class="slds-icon_container slds-tile_board__icon">
+                                    <aura:if isTrue="{!word.checkStatus == 'skipped'}">
+                                    	<lightning:icon iconName="utility:warning" size="small"
+                                                        variant="warning" alternativeText="Skipped"
+                                                        title="The spell check was skipped." />
+                                    </aura:if>
+                                    
+                                    <aura:if isTrue="{!word.checkStatus == 'success'}">
+                                    	<lightning:icon iconName="utility:success" size="small"
+                                                        variant="success" alternativeText="Success"
+                                                        title="The word passed the spelling check." />
+                                    </aura:if>
+                                    
+                                    <aura:if isTrue="{!word.checkStatus == 'error'}">
+                                    	<lightning:icon iconName="utility:error" size="small"
+                                                        variant="error" alternativeText="Error"
+                                                        title="The word did not pass the check." />
+                                    </aura:if>
+                                </span>
+                            </div>
+                        </article>
+                    </li>
+                </aura:iteration>
+                <!-- End iteration -->
+            </ul>
+        </div>
+    </div>
+</aura:component>

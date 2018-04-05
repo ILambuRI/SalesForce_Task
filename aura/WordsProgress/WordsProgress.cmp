@@ -1,0 +1,35 @@
+<!-- c:WordsProgress -->
+<aura:component >
+    <!-- For set a padding class -->
+    <aura:attribute name="paddingClass" type="String"/>
+    <!-- Values for calculating progress from 'c:RandomWords' -->
+    <aura:attribute name="storeSelectedWords" type="Map" />
+    <aura:attribute name="selectedWords" type="Words__c[]" />
+    <aura:attribute name="buttonStatus" type="Map" />
+    <!-- Value for progress display -->
+    <aura:attribute name="progress" type="Map" default="{ overall: 0,	
+                                                          left: 0,
+                                                          percent: 0 }"/>
+    <!-- ************************************************************************************************* -->
+    <!-- Recalculation when a new lesson is selected -->
+    <aura:handler name="change" value="{!v.buttonStatus}" action="{!c.onchangeRecalculationOverall}" />
+    <!-- Recalculation when 'v.seletedWords' is changed -->
+    <aura:handler name="change" value="{!v.selectedWords}" action="{!c.onchangeRecalculationLeft}" />
+    
+    <!-- ************************************************************************************************* -->
+    <div class="{!v.paddingClass}">
+        <div class="slds-progress-bar slds-progress-bar_large slds-progress-bar_circular"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="{!v.progress.percent}" role="progressbar">
+
+            <span class="slds-progress-bar__value slds-progress-bar__value_success" style="{!'width: ' + v.progress.percent + '%;'}">
+                <span class="slds-assistive-text">Progress: {!v.progress.percent}%</span>
+            </span>
+        </div>
+
+        <div class="slds-text-align_center slds-text-body_regular slds-p-around_x-small">
+            <span class="slds-badge slds-text-heading_medium">
+                <strong>{!v.progress.left} | {!v.progress.percent}% | {!v.progress.overall}</strong>
+            </span>
+        </div>
+    </div>
+</aura:component>

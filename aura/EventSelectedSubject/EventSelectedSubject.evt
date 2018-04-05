@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Event for update array 'selectedWords' in 'RandomWords.cmp'">
+    <aura:attribute name="subjectName" type="String"/>
+    <aura:attribute name="action" type="String"/>
+</aura:event>
