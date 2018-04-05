@@ -92,6 +92,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>EmployeeSkillTriggerService</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>EmployeeTriggerController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
