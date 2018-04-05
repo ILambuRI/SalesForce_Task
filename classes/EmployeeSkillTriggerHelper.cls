@@ -3,14 +3,15 @@ public class EmployeeSkillTriggerHelper {
         Id[] employeeIdList = new Id[]{};
         Employee__c[] employeeList = new Employee__c[]{};
         AggregateResult[] employeeSummAssignedTimeList = new AggregateResult[]{};
-        Map<Id,EmployeeWrapper> employeeWrapperList = new Map<Id,EmployeeWrapper>();
-        // EmployeeWrapper[] employeeWrapperList = new EmployeeWrapper[]{};
+        Map<Id,EmployeeWrapper> employeeWrapperMap = new Map<Id,EmployeeWrapper>();
         Map<Id, Integer> employeeSkillMap = new Map<Id, Integer>();
 
+        /* Get all employee ID */
         for (EmployeeSkill__c employeeSkill : triggerNew) {
             employeeIdList.add(employeeSkill.Employee__c);
         }
         
+        /* Filling out lists from the database */
         try {
             employeeList = [
                 SELECT Id, Availability__c
@@ -30,30 +31,36 @@ public class EmployeeSkillTriggerHelper {
             System.debug('Error in Exception: ' + e.getMessage());
         }
 
-
+        /* Fill map with ID of employee and his summ of 'Assigned Time' from EmployeeSkill */
         for (AggregateResult summAssignedTime : employeeSummAssignedTimeList) {
-            Id id = (Id)summAssignedTime.get('Employee__c');
+            Id employeeId = (Id)summAssignedTime.get('Employee__c');
             Integer summ = Math.round((Decimal)summAssignedTime.get('summ'));
-            employeeSkillMap.put(id, summ);
+            employeeSkillMap.put(employeeId, summ);
         }
 
+        /* Fill map with ID of employee and obj EmployeeWrapper with params */
         for (Employee__c employee : employeeList) {
             EmployeeWrapper newEmployeeWrapper = new EmployeeWrapper();
             newEmployeeWrapper.id = employee.Id;
             newEmployeeWrapper.availability = Math.round((Decimal)employee.Availability__c);
             newEmployeeWrapper.summAssignedTime = employeeSkillMap.get(employee.Id);
 
-            employeeWrapperList.put(employee.Id, newEmployeeWrapper);
+            employeeWrapperMap.put(employee.Id, newEmployeeWrapper);
         }
 
+        /* Add ID of EmployeeSkill to list in obj EmployeeWrapper from map */
         for (SObject employeeSkill : triggerNewMap.values())  {
-            if (employeeWrapperList.containsKey((Id)employeeSkill.get('Employee__c'))) {
-                EmployeeWrapper employeeWrapper = employeeWrapperList.get((Id)employeeSkill.get('Employee__c'));
+            if (employeeWrapperMap.containsKey((Id)employeeSkill.get('Employee__c'))) {
+                EmployeeWrapper employeeWrapper = employeeWrapperMap.get((Id)employeeSkill.get('Employee__c'));
                 employeeWrapper.employeeSkillIdList.add(employeeSkill.Id);
             }
         }
         
-        for (EmployeeWrapper employeeWrapper : employeeWrapperList.values()) {
+        /** Check, if Availability < Assigned Time for this employee
+          * adds errors to all Employee Skill in Trigger.newMap
+          * by ID from list in obj EmployeeWrapper
+          */
+        for (EmployeeWrapper employeeWrapper : employeeWrapperMap.values()) {
             if (employeeWrapper.availability < employeeWrapper.summAssignedTime) {
                 for (Id employeeSkillId : employeeWrapper.employeeSkillIdList) {
                     triggerNewMap.get(employeeSkillId).addError('Availability is less than overall Assigned Time!');
