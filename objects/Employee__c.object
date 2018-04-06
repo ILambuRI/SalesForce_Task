@@ -45,6 +45,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
@@ -130,18 +131,22 @@ TEXT ( IF (  (MONTH(End_Date__c ) +12 - MONTH(Start_Date__c ))&gt;=12,  (MONTH(E
                 <value>
                     <fullName>QA</fullName>
                     <default>false</default>
+                    <label>QA</label>
                 </value>
                 <value>
                     <fullName>DEV</fullName>
                     <default>false</default>
+                    <label>DEV</label>
                 </value>
                 <value>
                     <fullName>PMO</fullName>
                     <default>false</default>
+                    <label>PMO</label>
                 </value>
                 <value>
                     <fullName>BA</fullName>
                     <default>false</default>
+                    <label>BA</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -242,4 +247,5 @@ TEXT ( IF (  (MONTH(End_Date__c ) +12 - MONTH(Start_Date__c ))&gt;=12,  (MONTH(E
         <errorDisplayField>Availability__c</errorDisplayField>
         <errorMessage>Availability should be from 1 to 8 hours</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>

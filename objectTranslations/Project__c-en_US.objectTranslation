@@ -9,6 +9,10 @@
         <value>Projects</value>
     </caseValues>
     <fields>
+        <label><!-- Developers --></label>
+        <name>Developers__c</name>
+    </fields>
+    <fields>
         <label><!-- Hours --></label>
         <name>Hours__c</name>
     </fields>
@@ -44,6 +48,10 @@
         <label><!-- Project Owner --></label>
         <name>Project_Owner__c</name>
         <relationshipLabel><!-- Projects (Project Owner) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- QA --></label>
+        <name>QA__c</name>
     </fields>
     <fields>
         <label><!-- Start Date --></label>

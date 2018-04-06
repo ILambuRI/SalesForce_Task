@@ -9,6 +9,8 @@
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>Randome Words</masterLabel>
-    <pageTemplate>flexipage:defaultAppHomeTemplate</pageTemplate>
+    <template>
+        <name>flexipage:defaultAppHomeTemplate</name>
+    </template>
     <type>AppPage</type>
 </FlexiPage>

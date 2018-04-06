@@ -4,15 +4,16 @@
         <headerColor>#0070D2</headerColor>
         <logo>X15197121120636</logo>
         <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
     <formFactors>Large</formFactors>
     <label>My Tasks</label>
     <navType>Standard</navType>
-    <tab>Reservation</tab>
-    <tab>Accounts_List</tab>
-    <tab>Employee__c</tab>
-    <tab>EmployeeSkill__c</tab>
-    <tab>Project__c</tab>
+    <tabs>Reservation</tabs>
+    <tabs>Accounts_List</tabs>
+    <tabs>Employee__c</tabs>
+    <tabs>EmployeeSkill__c</tabs>
+    <tabs>Project__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Reservation_UtilityBar</utilityBar>
 </CustomApplication>
