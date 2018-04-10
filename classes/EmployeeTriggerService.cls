@@ -4,11 +4,14 @@ public class EmployeeTriggerService {
 	public static List<EmployeeSkill__c> getListAllEmployeeSkillByEmployeeId(Set<Id> employeesIdSet) {
         EmployeeSkill__c[] employeeSkillList = new EmployeeSkill__c[]{};
         try {
-            employeeSkillList = [
-                SELECT Project__c
-                FROM EmployeeSkill__c
-                WHERE Employee__c IN :employeesIdSet
-            ];
+            for (EmployeeSkill__c[] employeeSkillListBatch : [
+                    SELECT Project__c
+                    FROM EmployeeSkill__c
+                    WHERE Employee__c IN :employeesIdSet
+                ]) {
+                
+                employeeSkillList.addAll(employeeSkillListBatch);
+            }
         } catch (QueryException e) {
             System.debug('Error in QueryException: ' + e.getMessage());
         } catch (Exception e) {
@@ -33,11 +36,14 @@ public class EmployeeTriggerService {
         EmployeeSkill__c[] allEmpSkillsByProjectId = new EmployeeSkill__c[]{};
 
         try {
-            allEmpSkillsByProjectId = [
-                SELECT Employee__c, Project__c
-                FROM EmployeeSkill__c
-                WHERE Project__c IN :projectIdList
-            ];
+            for (EmployeeSkill__c[] employeeSkillListBatch : [
+                    SELECT Employee__c, Project__c
+                    FROM EmployeeSkill__c
+                    WHERE Project__c IN :projectIdList
+                ]) {
+                
+                allEmpSkillsByProjectId.addAll(employeeSkillListBatch);
+            }
         } catch (QueryException e) {
             System.debug('Error in QueryException: ' + e.getMessage());
         } catch (Exception e) {
@@ -65,14 +71,16 @@ public class EmployeeTriggerService {
          *  where 'isActive' true and 'IT Department' is 'DEV' or 'QA'
          */
         try {
-            allEmployeesByIdMap = new Map<Id, Employee__c>([
-                SELECT IT_Department__c
-                FROM Employee__c
-                WHERE Id IN :allEmployeesIdFromProjectsSet
-                AND isActive__c = true
-                AND (IT_Department__c = 'DEV' OR IT_Department__c = 'QA')
-            ]);
-
+            for (Employee__c[] employeeListBatch : [
+                    SELECT IT_Department__c
+                    FROM Employee__c
+                    WHERE Id IN :allEmployeesIdFromProjectsSet
+                    AND isActive__c = true
+                    AND (IT_Department__c = 'DEV' OR IT_Department__c = 'QA')
+                ]) {
+                
+                allEmployeesByIdMap.putAll(employeeListBatch);
+            }
         } catch (QueryException e) {
             System.debug('Error in QueryException: ' + e.getMessage());
         } catch (Exception e) {
