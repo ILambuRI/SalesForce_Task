@@ -42,4 +42,27 @@ public class EmployeeSkillTriggerHelper {
           */
         EmployeeSkillTriggerService.checkAvailabilityWithSummAssignedTime(employeeWrapperMap, triggerNewMap);
     }
+
+    /****************************************************************************************************************/
+
+    public static void updateSumDevAndQaInProjects(EmployeeSkill__c[] triggerNewOrOld, Boolean isDelete) {
+
+        /* Fill map with Project's ID and obj ProjectWrapper by list EmployeeSkills from Employees */
+        Map<Id, EmployeeSkillTriggerService.ProjectWrapper> projectWrapperMap = EmployeeSkillTriggerService.createMapProjectIdAndProjectWrapper(triggerNewOrOld);
+        
+        /* Get all EmployeeSkills by Project's ID from map */
+        EmployeeSkill__c[] allEmpSkillsByProjectId = EmployeeSkillTriggerService.getAllEmployeeSkillsByProjectsId(projectWrapperMap.keySet());
+        
+        /* Set with ID of all employees */
+        Map<Id, Employee__c> allEmployeesByIdMap = EmployeeSkillTriggerService.createMapWithIdAndEmployeesFromListEmployeeSkill(allEmpSkillsByProjectId);
+        
+        /* Add ID to set of obj ProjectWrapper with his employees */
+        projectWrapperMap = EmployeeSkillTriggerService.addEmployeeIdToObjInMapWithProjectWrapper(projectWrapperMap, allEmpSkillsByProjectId);
+        
+        /* Count all active Employees with 'QA' and 'DEV' 'IT Department' for each Project */
+        Project__c[] projectToUpdateList = EmployeeSkillTriggerService.createListOfProjectsForUpdate(allEmployeesByIdMap, projectWrapperMap);
+        
+        /* Update Projects by ID with new data */
+        EmployeeSkillTriggerService.salesforceCreateMiracle(projectToUpdateList);
+    }
 }
