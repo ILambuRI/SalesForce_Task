@@ -115,6 +115,9 @@ public class EmployeeTriggerService {
     }
     
 	public static Map<Id, Employee__c> createMapWithIdAndEmployeesFromListEmployeeSkill(EmployeeSkill__c[] allEmpSkillsByProjectId, Set<Id> employeesIdSet, Boolean isDelete) {
+        Settings settings = new Settings();
+        String valQa = settings.getValuePicklistFromObjectEmployee('QA');
+        String valDev = settings.getValuePicklistFromObjectEmployee('DEV');
         Set<Id> allEmployeesIdFromProjectsSet = new Set<Id>();
         Map<Id, Employee__c> allEmployeesByIdMap = new Map<Id, Employee__c>();
 
@@ -138,7 +141,7 @@ public class EmployeeTriggerService {
                     WHERE Id IN :allEmployeesIdFromProjectsSet
                     AND isActive__c = true
                     AND End_Date__c = null
-                    AND (IT_Department__c = 'DEV' OR IT_Department__c = 'QA')
+                    AND (IT_Department__c = :valDev OR IT_Department__c = :valQa)
                 ]) {
                 
                 allEmployeesByIdMap.putAll(employeeListBatch);
@@ -163,6 +166,10 @@ public class EmployeeTriggerService {
 
     /* Count all active Employees with 'QA' and 'DEV' 'IT Department' for each Project */
 	public static List<Project__c> createListOfProjectsForUpdate(Map<Id, Employee__c> allEmployeesByIdMap, Map<Id, ProjectWrapper> projectWrapperMap) {
+        Settings settings = new Settings();
+        String valQa = settings.getValuePicklistFromObjectEmployee('QA');
+        String valDev = settings.getValuePicklistFromObjectEmployee('DEV');
+
         /* List with Projects for update */
         Project__c[] projectToUpdateList = new Project__c[]{};
 
@@ -175,10 +182,10 @@ public class EmployeeTriggerService {
 
                 Employee__c employee = allEmployeesByIdMap.get(employeeId);
                 /* Add +1 to count in obj ProjectWrapper */
-                if (employee.IT_Department__c == 'QA') {
+                if (employee.IT_Department__c == valQa) {
                     projectWrapper.qa += 1;
                 }
-                else if (employee.IT_Department__c == 'DEV') {
+                else if (employee.IT_Department__c == valDev) {
                     projectWrapper.dev += 1;
                 }
             }
