@@ -1,7 +1,25 @@
 public class EmployeeTriggerHelper {
-    public static void updateSumDevAndQaInProjects(Employee__c[] triggerNewOrOld, Boolean isDelete) {
-        /* Creat set with Employee's ID which change */
-        Set<Id> employeesIdSet = new Map<Id, Employee__c>(triggerNewOrOld).keySet();
+    public static void updateSumDevAndQaInProjects(Map<Id,SObject> triggerNewMap, Map<Id,SObject> triggerOldMap, Boolean isDelete, Boolean isUpdate, Boolean isUndelete) {
+        Set<Id> employeesIdSet = new Set<Id>();
+
+        if (isUpdate) {
+            employeesIdSet = EmployeeTriggerService.createSetIdWithFilteredEmployeeOnUpdate(triggerNewMap, triggerOldMap);
+        }
+        else if (isDelete) {
+            employeesIdSet = EmployeeTriggerService.createSetIdWithFilteredEmployeeOnDeleteOrUndelete(triggerOldMap);
+        }
+        else if (isUndelete) {
+            employeesIdSet = EmployeeTriggerService.createSetIdWithFilteredEmployeeOnDeleteOrUndelete(triggerNewMap);
+        }
+
+        /* Exit if the employee set with ID is empty after filtering */
+        if (employeesIdSet.size() == 0) {
+            return;
+        }
+        
+        System.debug('Recalculate');
+        // /* Creat set with Employee's ID which change */
+        // Set<Id> employeesIdSet = new Map<Id, Employee__c>(triggerNew).keySet();
 
         /* Get all EmployeeSkills by Employee's ID */
         EmployeeSkill__c[] empSkillsOfEmployeeList = EmployeeTriggerService.getListAllEmployeeSkillByEmployeeId(employeesIdSet);

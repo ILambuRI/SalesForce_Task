@@ -1,12 +1,18 @@
 public class Settings {
     private Map<String, String> messagesMap = new Map<String, String>();
+    private Map<String, String> picklistValueForObjectEmployeeMap = new Map<String, String>();
     
     public Settings() {
         this.initMessagesMap();
+        this.initPicklistValueForObjectEmployee();
     }
 
     public String getMessage(String key) {
         return this.messagesMap.get(key);
+    }
+
+    public String getValuePicklistFromObjectEmployee(String key) {
+        return this.picklistValueForObjectEmployeeMap.get(key);
     }
 
     private void initMessagesMap() {
@@ -22,5 +28,10 @@ public class Settings {
         this.messagesMap.put('DELETE_SUCCESS' , ' Deleting successful!');
         this.messagesMap.put('NO_ACCESS_ACCOUNT' , ' You do not have access to Accounts!');
         this.messagesMap.put('NO_ACCESS_CONTACT' , ' You do not have access to Contacts!');
+    }
+
+    private void initPicklistValueForObjectEmployee() {
+        this.picklistValueForObjectEmployeeMap.put('DEV' , 'DEV');
+        this.picklistValueForObjectEmployeeMap.put('QA' , 'QA');
     }
 }

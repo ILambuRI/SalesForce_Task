@@ -5,26 +5,32 @@ public class EmployeeTriggerController {
     }
 
     private void handling() {
-        if (Trigger.isInsert && Trigger.isAfter) {
+        if (Trigger.isUndelete) {
+            EmployeeTriggerHelper.updateSumDevAndQaInProjects(Trigger.newMap, Trigger.oldMap, Trigger.isDelete, Trigger.isUpdate, Trigger.isUndelete);
+        }
+        else if (Trigger.isDelete) {
+            if (Trigger.isAfter) {
 
+            }
+            else if (Trigger.isBefore) {
+                EmployeeTriggerHelper.updateSumDevAndQaInProjects(Trigger.newMap, Trigger.oldMap, Trigger.isDelete, Trigger.isUpdate, Trigger.isUndelete);
+            }
         }
-        else if (Trigger.isundelete) {
-           
+        else if (Trigger.isUpdate) {
+            if (Trigger.isAfter) {
+                EmployeeTriggerHelper.updateSumDevAndQaInProjects(Trigger.newMap, Trigger.oldMap, Trigger.isDelete, Trigger.isUpdate, Trigger.isUndelete);
+            }
+            else if (Trigger.isBefore) {
+                EmployeeTriggerHelper.checkDuplicate(Trigger.new, Trigger.newMap, Trigger.isInsert);
+            }
         }
-        else if (Trigger.isDelete && Trigger.isAfter) {
+        else if (Trigger.isInsert) {
+            if (Trigger.isAfter) {
 
-        }
-        else if (Trigger.isUpdate && Trigger.isAfter) {
-            EmployeeTriggerHelper.updateSumDevAndQaInProjects(Trigger.new, Trigger.isDelete);
-        }
-        else if (Trigger.isDelete && Trigger.isBefore) {
-            EmployeeTriggerHelper.updateSumDevAndQaInProjects(Trigger.old, Trigger.isDelete);
-        }
-        else if (Trigger.isInsert && Trigger.isBefore) {
-            EmployeeTriggerHelper.checkDuplicate(Trigger.new, Trigger.newMap, Trigger.isInsert);
-        }
-        else if(Trigger.isUpdate && Trigger.isBefore) {
-            EmployeeTriggerHelper.checkDuplicate(Trigger.new, Trigger.newMap, Trigger.isInsert);
+            }
+            else if (Trigger.isBefore) {
+                EmployeeTriggerHelper.checkDuplicate(Trigger.new, Trigger.newMap, Trigger.isInsert);
+            }
         }
     }
 }

@@ -116,6 +116,7 @@ public class EmployeeSkillTriggerService {
                     FROM Employee__c
                     WHERE Id IN :allEmployeesIdFromProjectsSet
                     AND isActive__c = true
+                    AND End_Date__c = null
                     AND (IT_Department__c = 'DEV' OR IT_Department__c = 'QA')
                 ]) {
 

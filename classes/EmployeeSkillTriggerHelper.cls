@@ -45,8 +45,7 @@ public class EmployeeSkillTriggerHelper {
 
     /****************************************************************************************************************/
 
-    public static void updateSumDevAndQaInProjects(EmployeeSkill__c[] triggerNewOrOld, Boolean isDelete) {
-
+    public static void updateSumDevAndQaInProjects(EmployeeSkill__c[] triggerNewOrOld) {
         /* Fill map with Project's ID and obj ProjectWrapper by list EmployeeSkills from Employees */
         Map<Id, EmployeeSkillTriggerService.ProjectWrapper> projectWrapperMap = EmployeeSkillTriggerService.createMapProjectIdAndProjectWrapper(triggerNewOrOld);
         

@@ -1,4 +1,65 @@
 public class EmployeeTriggerService {
+	public static Set<Id> createSetIdWithFilteredEmployeeOnUpdate(Map<Id,SObject> triggerNewMap, Map<Id,SObject> triggerOldMap) {
+        Settings settings = new Settings();
+        String valQa = settings.getValuePicklistFromObjectEmployee('QA');
+        String valDev = settings.getValuePicklistFromObjectEmployee('DEV');
+        Set<Id> employeesFilteredIdSet = new Set<Id>();
+
+        for (Employee__c newEmployee : (Employee__c[])triggerNewMap.values()) {
+            Employee__c oldEmployee = (Employee__c)triggerOldMap.get(newEmployee.Id);
+            
+            /* If the 'isActive__c' has been changed and old or new 'IT_Department__c' was 'QA' or 'DEV' */
+            if (
+                (newEmployee.isActive__c != oldEmployee.isActive__c) &&
+                ((newEmployee.IT_Department__c == valQa || newEmployee.IT_Department__c == valDev) ||
+                 (oldEmployee.IT_Department__c == valQa || oldEmployee.IT_Department__c == valDev))
+            ) {
+                    
+                employeesFilteredIdSet.add(newEmployee.Id);
+            }
+            /* If the 'IT_Department__c' has been changed and old or new 'IT_Department__c' was 'QA' or 'DEV'
+             * and 'isActive__c' == 'true'
+             */
+            else if (
+                (newEmployee.isActive__c == true) &&
+                (newEmployee.IT_Department__c != oldEmployee.IT_Department__c) &&
+                ((newEmployee.IT_Department__c == valQa || newEmployee.IT_Department__c == valDev) ||
+                 (oldEmployee.IT_Department__c == valQa || oldEmployee.IT_Department__c == valDev))
+            ) {
+                employeesFilteredIdSet.add(newEmployee.Id);
+            }
+            /* If the 'End_Date__c' has been changed and old or new 'End_Date__c' was 'null' */
+            else if (
+                (newEmployee.End_Date__c != oldEmployee.End_Date__c) &&
+                ((newEmployee.End_Date__c == null) ||
+                 (oldEmployee.End_Date__c == null))
+            ) {
+                employeesFilteredIdSet.add(newEmployee.Id);
+            }
+        }
+
+        return employeesFilteredIdSet;
+    }
+
+	public static Set<Id> createSetIdWithFilteredEmployeeOnDeleteOrUndelete(Map<Id,SObject> triggerNewOrOldMap) {
+        Settings settings = new Settings();
+        String valQa = settings.getValuePicklistFromObjectEmployee('QA');
+        String valDev = settings.getValuePicklistFromObjectEmployee('DEV');
+        Set<Id> employeesFilteredIdSet = new Set<Id>();
+        
+        for (Employee__c employee : (Employee__c[])triggerNewOrOldMap.values()) {
+            /* If employee is active and 'IT_Department__c' is 'QA' or 'DEV' and 'End_Date__c' is 'null' */
+            if (
+                (employee.isActive__c == true) &&
+                (employee.IT_Department__c == valQa || employee.IT_Department__c == valDev) &&
+                (employee.End_Date__c == null)
+            ) {
+                employeesFilteredIdSet.add(employee.Id);
+            }
+        }
+
+        return employeesFilteredIdSet;
+    }
 
     /* Get all EmployeeSkills by Employee's ID */
 	public static List<EmployeeSkill__c> getListAllEmployeeSkillByEmployeeId(Set<Id> employeesIdSet) {
@@ -76,6 +137,7 @@ public class EmployeeTriggerService {
                     FROM Employee__c
                     WHERE Id IN :allEmployeesIdFromProjectsSet
                     AND isActive__c = true
+                    AND End_Date__c = null
                     AND (IT_Department__c = 'DEV' OR IT_Department__c = 'QA')
                 ]) {
                 

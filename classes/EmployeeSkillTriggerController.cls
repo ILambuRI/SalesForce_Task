@@ -5,27 +5,30 @@ public class EmployeeSkillTriggerController {
     }
 
     private void handling() {
-        if(Trigger.isDelete && Trigger.isBefore) {
- 
+        if (Trigger.isUndelete) {
+            EmployeeSkillTriggerHelper.updateSumDevAndQaInProjects(Trigger.new);
         }
-        else if(Trigger.isundelete) {
-           
+        else if (Trigger.isDelete) {
+            if (Trigger.isAfter) {
+                EmployeeSkillTriggerHelper.updateSumDevAndQaInProjects(Trigger.old);
+            }
+            else if (Trigger.isBefore) {
+            }
         }
-        else if(Trigger.isInsert && Trigger.isBefore) {
-
+        else if (Trigger.isUpdate) {
+            if (Trigger.isAfter) {
+                EmployeeSkillTriggerHelper.checkEmployeeAvailability(Trigger.new, Trigger.newMap);
+            }
+            else if (Trigger.isBefore) {
+            }
         }
-        else if(Trigger.isUpdate && Trigger.isBefore) {
-
-        }
-        else if(Trigger.isDelete && Trigger.isAfter) {
-            EmployeeSkillTriggerHelper.updateSumDevAndQaInProjects(Trigger.old, Trigger.isDelete);
-        }
-        else if(Trigger.isInsert && Trigger.isAfter) {
-            EmployeeSkillTriggerHelper.updateSumDevAndQaInProjects(Trigger.new, Trigger.isDelete);
-            EmployeeSkillTriggerHelper.checkEmployeeAvailability(Trigger.new, Trigger.newMap);
-        }
-        else if(Trigger.isUpdate && Trigger.isAfter) {
-            EmployeeSkillTriggerHelper.checkEmployeeAvailability(Trigger.new, Trigger.newMap);
+        else if (Trigger.isInsert) {
+            if (Trigger.isAfter) {
+                EmployeeSkillTriggerHelper.updateSumDevAndQaInProjects(Trigger.new);
+                EmployeeSkillTriggerHelper.checkEmployeeAvailability(Trigger.new, Trigger.newMap);
+            }
+            else if (Trigger.isBefore) {
+            }
         }
     }
 }
